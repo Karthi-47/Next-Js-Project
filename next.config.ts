@@ -1,15 +1,11 @@
-import type { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
-  /* config options here */
-
-};
-
 module.exports = {
-  eslint: {
-    ignoreDuringBuilds: true,
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/login", // Change to your desired default page
+        permanent: false, // Use false for temporary redirects (307)
+      },
+    ];
   },
 };
-
-export default nextConfig;
-
