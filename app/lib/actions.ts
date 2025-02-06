@@ -53,14 +53,16 @@ export async function createInvoice(prevState: State, formData: FormData) {
     const date = new Date().toISOString().split('T')[0];
     
     try {
-    await sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`;
+      await sql`
+          INSERT INTO invoices (customer_id, amount, status, date)
+          VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`;
     } catch (error) {
+      console.error("Database Error:", error); // ✅ Log the error to avoid ESLint warning
       return {
-        message: 'Databse Error: Failed to Create Invoice.',
-    };
-  } 
+        message: 'Database Error: Failed to Create Invoice.',
+        error: error instanceof Error ? error.message : String(error), // ✅ Return the error message
+      };
+    } 
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
 }
@@ -77,24 +79,32 @@ export async function updateInvoice(id: string, formData: FormData) {
   const amountInCents = amount * 100;
  
   try {
-  await sql`
-    UPDATE invoices
-    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-    WHERE id = ${id}
-  `;
+    await sql`
+      UPDATE invoices
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id}
+    `;
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.'};
-    } 
+    console.error("Database Error:", error); // ✅ Log the error
+    return { 
+      message: 'Database Error: Failed to Update Invoice.', 
+      error: error instanceof Error ? error.message : String(error) // ✅ Return error message 
+    };
+  } 
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
 
 export async function deleteInvoice(id: string) {
   try {
-  await sql`DELETE FROM invoices WHERE id = ${id}`;
-}catch (error) {
-  return { message: 'Database Error: Failed to Delete Invoice.'};
-}
+    await sql`DELETE FROM invoices WHERE id = ${id}`;
+  } catch (error) {
+    console.error("Database Error:", error); // ✅ Log the error
+    return { 
+      message: 'Database Error: Failed to Delete Invoice.', 
+      error: error instanceof Error ? error.message : String(error) // ✅ Return error message 
+    };
+  }
   revalidatePath('/dashboard/invoices');
 }
 
