@@ -11,7 +11,6 @@ import Link from 'next/link';
 import { Button } from '@/app/button';
 import { updateInvoice } from '@/app/lib/actions';
 
-
 export default function EditInvoiceForm({
   invoice,
   customers,
@@ -19,7 +18,15 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
-  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  const updateInvoiceWithId = async (formData: FormData) => {
+    try {
+      const response = await updateInvoice(invoice.id, formData);
+      console.log('Invoice updated successfully:', response);
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+    }
+  };
+
   return (
     <form action={updateInvoiceWithId}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
