@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "pnpm install --no-frozen-lockfile && pnpm build",
     "dev": "next dev --turbopack",
     "seed": "tsx -r dotenv/config ./app/seed/route.ts",
     "start": "next start",
